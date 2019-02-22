@@ -1,2 +1,4 @@
 // Ignore PyCharm files
 .idea/*
+__pycache__/
+gas-phase_output/
