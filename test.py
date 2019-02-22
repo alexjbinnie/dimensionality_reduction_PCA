@@ -16,7 +16,7 @@ from lars_ddr import colorplot
 
 # Directories
 # files = 'examples/ose_wt'
-files = 'examples/bifurcations/Pummerer_dynamics_trajectories/gas-phase/n1'
+files = 'examples/bifurcations/Pummerer_dynamics_trajectories/gas-phase'
 
 # "New Files" to test transforming trajectories into already generated reduced dimensional space
 # new_file = 'examples/bifurcations/Pummerer_dynamics_trajectories/gas-phase/comet-n30-traj6_fixed.xyz'
