@@ -15,23 +15,27 @@ from lars_ddr import colorplot
 from filter_top_distances import filter_top_distances
 
 
-def read_file(f):
+def read_xyz_file(filename):
     """ Reads in each file, and for each file, separates each IRC point into its own matrix of cartesian coordinates.
     coordinates_all is arranged as coordinates_all[n][N][c], where n is the IRC point, N is the atom number, and c
     is the x, y, or z coordinate.
+    :rtype: (str, List[float], List[str], ndarray)
+    :type filename: str
+    :param filename: The path of the xyz file
+    :return: A tuple consisting of the filename, an array of energies, an array of atoms and an matrix of coordinates
     """
-    print("File being read is: %s" % f)
-    name = os.path.splitext(os.path.basename(f))[0]
+    print("File being read is: %s" % filename)
+    name = os.path.splitext(os.path.basename(filename))[0]
 
-    xyz = open(f)
-    n_atoms = int(xyz.readline())
+    xyz_file = open(filename)
+    n_atoms = int(xyz_file.readline())
     energies = []
     atoms = []
     coordinates = []
 
     # Each point along the IRC/traj will be stored as an entry in a 3D array called coordinates_all
     coordinates_all = []
-    for line in xyz:
+    for line in xyz_file:
         splitline = line.split()
         if len(splitline) == 4:
             atom, x, y, z = line.split()
@@ -52,7 +56,7 @@ def read_file(f):
     else:
         coordinates_all.append(coordinates)
 
-    xyz.close()
+    xyz_file.close()
 
     coordinates_all = np.asarray(coordinates_all)
 
@@ -414,7 +418,7 @@ def transform_new_data(new_traj, directory, n_dim, a1, a2, a3, a4, pca_fit, pca_
 
     print("\nTransforming %s into reduced dimensional representation..." % new_traj)
 
-    name, energies, atoms, coordinates_all = read_file(new_traj)
+    name, energies, atoms, coordinates_all = read_xyz_file(new_traj)
     coordinates_shifted = set_atom_one_to_origin(coordinates_all)
     atom_masses, mass_weighted_coords = mass_weighting_pt(atoms, coordinates_shifted)
     negatives, positives, all_signs = chirality_test(coordinates_all, a1, a2, a3, a4)
@@ -535,7 +539,7 @@ def dr_routine(dr_input, n_dim, a1=1, a2=2, a3=3, a4=4, input_type="Coordinates"
     if os.path.isfile(dr_input) is True:
         print("\nInput is a file!")
 
-        name, energies, atoms, coordinates_all = read_file(dr_input)
+        name, energies, atoms, coordinates_all = read_xyz_file(dr_input)
         coordinates_shifted = set_atom_one_to_origin(coordinates_all)
         atom_masses, mass_weighted_coords = mass_weighting_pt(atoms, coordinates_shifted)
 
@@ -561,7 +565,7 @@ def dr_routine(dr_input, n_dim, a1=1, a2=2, a3=3, a4=4, input_type="Coordinates"
         i = 0
         for xyz_file in xyz_files:
             i = i + 1
-            name, energies, atoms, coordinates_all = read_file(xyz_file)
+            name, energies, atoms, coordinates_all = read_xyz_file(xyz_file)
             names.append(name)
             coordinates_shifted = set_atom_one_to_origin(coordinates_all)
             atom_masses, mass_weighted_coords = mass_weighting_pt(atoms, coordinates_shifted)
