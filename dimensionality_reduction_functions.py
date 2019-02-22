@@ -21,7 +21,7 @@ def read_file(f):
     is the x, y, or z coordinate.
     """
     print("File being read is: %s" % f)
-    name = f.split('/')[-1].split('.')[-2]
+    name = os.path.splitext(os.path.basename(f))[0]
 
     xyz = open(f)
     n_atoms = int(xyz.readline())
